@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket de compra</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .ticket {
+            background: #fff;
+            width: 320px;
+            padding: 16px;
+            border: 1px dashed #999;
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        }
+        .centro { text-align: center; }
+        .negritas { font-weight: bold; }
+        h1 { font-size: 18px; margin-bottom: 4px; }
+        .meta { font-size: 12px; color: #555; margin-bottom: 10px; }
+        .divider { border-top: 1px dashed #999; margin: 8px 0; }
+        table { width: 100%; font-size: 13px; border-collapse: collapse; }
+        th {
+            text-align: left;
+            border-bottom: 1px dashed #999;
+            padding-bottom: 4px;
+        }
+        td { padding: 3px 0; }
+        .amt { text-align: right; }
+        .total td { border-top: 1px dashed #999; font-weight: bold; }
+        .footer { text-align: center; font-size: 11px; color: #777; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="ticket">
+        <div class="centro">
+            <h1>PERFUMERÍA</h1>
+            <div class="meta">
+                Av. Las Flores 456, Ciudad<br>
+                RFC: PER-204060-ABC<br>
+                Ticket: 000123<br>
+                Fecha: <span id="fecha"></span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cant.</th>
+                    <th class="amt">Precio</th>
+                    <th class="amt">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="producto"></td>
+                    <td id="cantidad"></td>
+                    <td class="amt" id="precio"></td>
+                    <td class="amt" id="linea-total"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="divider"></div>
+
+        <table>
+            <tr>
+                <td>Subtotal</td>
+                <td class="amt" id="subtotal"></td>
+            </tr>
+            <tr>
+                <td>Descuento 20%</td>
+                <td class="amt" id="descuento"></td>
+            </tr>
+            <tr>
+                <td>Base (sin IVA)</td>
+                <td class="amt" id="base"></td>
+            </tr>
+            <tr>
+                <td>IVA 16%</td>
+                <td class="amt" id="iva"></td>
+            </tr>
+            <tr class="total">
+                <td>TOTAL</td>
+                <td class="amt" id="total"></td>
+            </tr>
+        </table>
+
+        <div class="divider"></div>
+
+        <div class="footer">
+            ¡Gracias por su compra!<br>
+            Con IVA 16% incluido
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

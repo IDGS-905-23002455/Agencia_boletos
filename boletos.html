@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agencia de Boletos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #eef3f8;
+            color: #1f2d3d;
+            padding: 20px;
+        }
+        .contenedor { max-width: 720px; margin: 0 auto; }
+        .cabecera {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .cabecera h1 { font-size: 26px; margin-bottom: 6px; }
+        .cabecera p { font-size: 14px; opacity: .9; }
+        .tarjeta {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(30, 58, 138, .08);
+        }
+        .tarjeta h2 { font-size: 18px; margin-bottom: 12px; color: #1e3a8a; }
+        .tarjeta ul { list-style: none; padding: 0; }
+        .tarjeta li {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e6edf5;
+            display: flex;
+            justify-content: space-between;
+        }
+        .tarjeta li:last-child { border-bottom: none; }
+        .info { font-size: 13px; color: #455a73; margin-top: 8px; }
+        .contador {
+            background: #dbeafe;
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+            font-size: 15px;
+            margin-top: 14px;
+        }
+        .contador span { font-weight: 700; color: #1e3a8a; }
+        form label { display: block; margin-bottom: 10px; font-size: 14px; }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        input:focus, select:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity .15s;
+        }
+        .btn:hover { opacity: .85; }
+        .btn-primario { background: #2563eb; color: #fff; margin-top: 6px; }
+        .btn-editar { background: #f59e0b; color: #fff; }
+        .btn-borrar { background: #ef4444; color: #fff; }
+        .mensaje { margin-top: 10px; font-size: 14px; color: #16a34a; }
+        .boleto {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #e6edf5;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .total { font-size: 16px; font-weight: 700; color: #1e3a8a; margin-top: 12px; }
+        .vacio { color: #94a3b8; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+
+        <div class="cabecera">
+            <h1>Agencia de Boletos</h1>
+        </div>
+
+        <div class="tarjeta">
+            <h2>Destinos disponibles</h2>
+            <ul id="destinos"></ul>
+            <p class="info" id="destinos-nombres"></p>
+            <p class="info" id="destinos-economicos"></p>
+            <p class="info" id="destinos-caro"></p>
+            <p class="info" id="destinos-promedio"></p>
+            <div class="contador">Próxima venta automática en <span id="contador">10</span> segundos</div>
+        </div>
+
+        <div class="tarjeta">
+            <h2>Comprar boleto</h2>
+            <form id="form-compra">
+                <label>Nombre
+                    <input type="text" id="nombre" placeholder="Tu nombre" required>
+                </label>
+                <label>Destino
+                    <select id="destino"></select>
+                </label>
+                <label>Cantidad
+                    <input type="number" id="cantidad" value="1" min="1">
+                </label>
+                <button type="submit" class="btn btn-primario">Comprar boleto</button>
+            </form>
+            <p class="mensaje" id="mensaje"></p>
+        </div>
+
+        <div class="tarjeta">
+            <h2>Mis boletos</h2>
+            <div id="lista-boletos"></div>
+            <h3 style="margin-top:16px; color:#1e3a8a;">Resumen de compra</h3>
+            <table style="width:100%; font-size:14px; border-collapse:collapse; margin-top:8px;">
+                <tr><td>Subtotal</td><td style="text-align:right;" id="subtotal"></td></tr>
+                <tr><td>Descuento 20%</td><td style="text-align:right;" id="descuento"></td></tr>
+                <tr><td>Base (sin IVA)</td><td style="text-align:right;" id="base"></td></tr>
+                <tr><td>IVA 16%</td><td style="text-align:right;" id="iva"></td></tr>
+                <tr style="font-weight:bold; border-top:1px solid #ccc;"><td>TOTAL</td><td style="text-align:right;" id="total"></td></tr>
+                <tr><td>Mitad del total</td><td style="text-align:right;" id="mitad"></td></tr>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="boletos.js"></script>
+
+</body>
+</html>
