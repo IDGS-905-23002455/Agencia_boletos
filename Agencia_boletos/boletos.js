@@ -1,25 +1,3 @@
-const sumar = (a, b) => a + b;
-const restar = (a, b) => a - b;
-const multiplicar = (a, b) => a * b;
-const dividir = (a, b) => a / b;
-const modulo = (a, b) => a % b;
-const porcentaje = (valor, pct) => (valor * pct) / 100;
-const mitad = (n) => n / 2;
-const calcularIVA = (monto) => porcentaje(monto, 16);
-const calcularTotalConIVA = (monto) => sumar(monto, calcularIVA(monto));
-
-console.log('--- ARROW FUNCTIONS ---');
-console.log('sumar(10,5) =', sumar(10, 5));
-console.log('restar(10,5) =', restar(10, 5));
-console.log('multiplicar(10,5) =', multiplicar(10, 5));
-console.log('dividir(10,5) =', dividir(10, 5));
-console.log('modulo(10,3) =', modulo(10, 3));
-console.log('porcentaje(850,20) =', porcentaje(850, 20));
-console.log('mitad(100) =', mitad(100));
-console.log('IVA de 1000 =', calcularIVA(1000));
-console.log('Total con IVA de 1000 =', calcularTotalConIVA(1000));
-
-
 const destinos = [
     { id: 1, lugar: "Cancún", precio: 4500 },
     { id: 2, lugar: "CDMX", precio: 2200 },
@@ -33,30 +11,28 @@ console.table(destinos);
 let boletos = [];
 let cuenta = 1;
 
+
 const mostrarDestinos = () => {
     const contenedor = document.getElementById('destinos');
     contenedor.innerHTML = '';
-    destinos.forEach(({ lugar, precio }) => { // destructuración
+    destinos.forEach(({ lugar, precio }) => {
         const li = document.createElement('li');
         li.textContent = `${lugar} - $${precio}`;
         contenedor.appendChild(li);
     });
 
-    const nombres = destinos.map(({ lugar }) => lugar).join(', '); // map
+    const nombres = destinos.map(({ lugar }) => lugar).join(', ');
     document.getElementById('destinos-nombres').textContent = 'Destinos: ' + nombres;
 
-    const economicos = destinos.filter(({ precio }) => precio < 2600); // filter
+    const economicos = destinos.filter(({ precio }) => precio < 2600);
     document.getElementById('destinos-economicos').textContent =
         'Económicos (menos de $2600): ' + economicos.map(({ lugar }) => lugar).join(', ');
 
-    const tieneCaro = destinos.some(({ precio }) => precio > 4000); // some
+    const tieneCaro = destinos.some(({ precio }) => precio > 4000);
     document.getElementById('destinos-caro').textContent =
         '¿Hay algún destino mayor a $4000? ' + (tieneCaro ? 'Sí' : 'No');
 
-    const promedio = dividir( // reduce + arrow
-        destinos.reduce((acc, { precio }) => acc + precio, 0),
-        destinos.length
-    );
+    const promedio = destinos.reduce((acc, { precio }) => acc + precio, 0) / destinos.length;
     document.getElementById('destinos-promedio').textContent =
         'Precio promedio: $' + promedio.toFixed(2);
 
@@ -69,11 +45,10 @@ const mostrarDestinos = () => {
         select.appendChild(opcion);
     });
 
-    console.log('forEach → destinos recorridos en pantalla');
     console.log('map → Destinos:', nombres);
     console.log('filter → Económicos:', economicos);
     console.log('some → ¿Hay uno mayor a $4000?', tieneCaro);
-    console.log('reduce + dividir → Precio promedio: $' + promedio.toFixed(2));
+    console.log('reduce → Precio promedio: $' + promedio.toFixed(2));
 };
 
 const procesarCompra = (compra) =>
@@ -85,7 +60,7 @@ document.getElementById('form-compra').addEventListener('submit', (evento) => {
     const destinoId = Number(document.getElementById('destino').value);
     const cantidad = Number(document.getElementById('cantidad').value);
 
-    const { lugar, precio } = destinos.find((d) => d.id === destinoId); // find + destructuración
+    const { lugar, precio } = destinos.find((d) => d.id === destinoId);
     const mensaje = document.getElementById('mensaje');
     mensaje.textContent = 'Procesando compra...';
 
@@ -93,7 +68,7 @@ document.getElementById('form-compra').addEventListener('submit', (evento) => {
         .then((boleto) => {
             boletos.push(boleto); // CREATE
             mensaje.textContent = `Boleto comprado: ${boleto.nombre} va a ${boleto.lugar} (x${boleto.cantidad})`;
-            console.log('CREATE → Boleto agregado:', boleto);
+            console.log('CREATE → Boleto creado:', boleto);
             mostrarBoletos();
         });
 });
@@ -101,12 +76,11 @@ document.getElementById('form-compra').addEventListener('submit', (evento) => {
 const mostrarBoletos = () => {
     const contenedor = document.getElementById('lista-boletos');
     contenedor.innerHTML = '';
-    boletos.forEach(({ id, nombre, lugar, cantidad, precio }) => { // destructuración
+    boletos.forEach(({ id, nombre, lugar, cantidad, precio }) => {
         const fila = document.createElement('div');
         fila.className = 'boleto';
-        const totalLinea = multiplicar(precio, cantidad); // arrow
         fila.innerHTML =
-            `<div><strong>${nombre}</strong> a ${lugar} x${cantidad} = $${totalLinea}</div> ` +
+            `<div><strong>${nombre}</strong> a ${lugar} x${cantidad} = $${precio * cantidad}</div> ` +
             `<div>` +
             `<button class="btn btn-editar" onclick="editarBoleto(${id})">Editar</button> ` +
             `<button class="btn btn-borrar" onclick="borrarBoleto(${id})">Borrar</button>` +
@@ -121,29 +95,15 @@ const mostrarBoletos = () => {
         contenedor.appendChild(vacio);
     }
 
-    const subtotal = boletos.reduce((acc, { precio, cantidad }) => acc + precio * cantidad, 0);
-    const descuentoTotal = porcentaje(subtotal, 20); // arrow
-    const base = restar(subtotal, descuentoTotal); // arrow
-    const iva = calcularIVA(base); // arrow
-    const total = calcularTotalConIVA(base); // arrow
-
-    document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
-    document.getElementById('descuento').textContent = '-$' + descuentoTotal.toFixed(2);
-    document.getElementById('base').textContent = '$' + base.toFixed(2);
-    document.getElementById('iva').textContent = '$' + iva.toFixed(2);
-    document.getElementById('total').textContent = '$' + total.toFixed(2);
-    document.getElementById('mitad').textContent = 'Mitad del total: $' + mitad(total).toFixed(2);
+    const total = boletos.reduce((acc, { precio, cantidad }) => acc + precio * cantidad, 0);
+    document.getElementById('total-boletos').textContent = 'Total de la compra: $' + total;
 
     console.log('READ → Boletos comprados:');
     console.table(boletos);
-    console.log('reduce → Subtotal: $' + subtotal.toFixed(2));
-    console.log('porcentaje → Descuento 20%: -$' + descuentoTotal.toFixed(2));
-    console.log('restar → Base (sin IVA): $' + base.toFixed(2));
-    console.log('calcularIVA → IVA 16%: $' + iva.toFixed(2));
-    console.log('sumar → TOTAL: $' + total.toFixed(2));
+    console.log('reduce → Total de la compra: $' + total);
 };
 
-const editarBoleto = (id) => {
+const editarBoleto = (id) => { 
     const nuevaCantidad = Number(prompt('Nueva cantidad:'));
     if (nuevaCantidad > 0) {
         boletos = boletos.map((boleto) =>
@@ -155,11 +115,12 @@ const editarBoleto = (id) => {
     }
 };
 
-const borrarBoleto = (id) => {
+const borrarBoleto = (id) => { // DELETE
     boletos = boletos.filter((boleto) => boleto.id !== id);
     console.log('DELETE → Boleto #' + id + ' eliminado. Quedan: ' + boletos.length);
     mostrarBoletos();
 };
+
 
 let segundos = 10;
 const contador = document.getElementById('contador');
