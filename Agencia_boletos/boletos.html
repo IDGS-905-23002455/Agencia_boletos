@@ -6,27 +6,52 @@
     <title>Agencia de Boletos</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background: #eef3f8;
             color: #1f2d3d;
-            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .contenedor { max-width: 720px; margin: 0 auto; }
         .cabecera {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: #fff;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
-        .cabecera h1 { font-size: 26px; margin-bottom: 6px; }
+        .cabecera h1 { font-size: 24px; }
         .cabecera p { font-size: 14px; opacity: .9; }
+        .salir {
+            color: #fff;
+            text-decoration: none;
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.4);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .salir:hover { background: rgba(255,255,255,.25); }
+        .contenedor {
+            flex: 1;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+        }
         .tarjeta {
             background: #fff;
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(30, 58, 138, .08);
         }
         .tarjeta h2 { font-size: 18px; margin-bottom: 12px; color: #1e3a8a; }
@@ -80,36 +105,93 @@
             border-radius: 8px;
             margin-bottom: 8px;
             font-size: 14px;
+            background: #fafcff;
         }
-        .total { font-size: 16px; font-weight: 700; color: #1e3a8a; margin-top: 12px; }
-        .vacio { color: #94a3b8; font-style: italic; }
+        .vacio { color: #94a3b8; font-style: italic; padding: 10px 0; }
+        .destinos-panel { grid-column: 1; grid-row: 1 / span 2; }
+        .comprar-panel { grid-column: 2; grid-row: 1; }
+        .panel-boletos { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; }
+        .lista-area { flex: 1; overflow-y: auto; max-height: 55vh; }
+        .resumen {
+            margin-top: 16px;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 12px;
+            font-size: 14px;
+        }
+        .resumen table { width: 100%; border-collapse: collapse; }
+        .resumen td { padding: 3px 0; }
+        .resumen td.der { text-align: right; }
+        .resumen .fila-total { font-weight: bold; border-top: 1px solid #ccc; }
+        .resumen h3 { color: #1e3a8a; margin-bottom: 6px; }
+        .cant { color: #64748b; font-size: 13px; }
+        .btn-ticket { background: #059669; color: #fff; }
+        .modal-fondo {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .6);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal-contenido {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 380px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-cerrar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: #fff;
+        }
+        .recibo {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            border: 1px dashed #999;
+            padding: 16px;
+        }
+        .recibo .centro { text-align: center; }
+        .recibo .divider { border-top: 1px dashed #999; margin: 8px 0; }
+        .recibo table { width: 100%; font-size: 13px; }
+        .recibo td { padding: 2px 0; }
+        .recibo .amt { text-align: right; }
+        .recibo .grande { font-weight: bold; border-top: 1px dashed #999; }
     </style>
 </head>
 <body>
+
+    <div class="cabecera">
+        <div>
+            <h1>Agencia de Boletos</h1>
+            <p id="bienvenida"></p>
+        </div>
+        <a class="salir" href="/logout">Cerrar sesión</a>
+    </div>
+
     <div class="contenedor">
 
-        <div class="cabecera">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h1>Agencia de Boletos</h1>
-                <a href="/logout" style="color:#fff; font-size:14px; text-decoration:none; border:1px solid rgba(255,255,255,.6); padding:6px 12px; border-radius:8px;">Cerrar sesión</a>
-            </div>
-        </div>
-
-        <div class="tarjeta">
+        <div class="tarjeta destinos-panel">
             <h2>Destinos disponibles</h2>
             <ul id="destinos"></ul>
             <p class="info" id="destinos-nombres"></p>
             <p class="info" id="destinos-economicos"></p>
             <p class="info" id="destinos-caro"></p>
             <p class="info" id="destinos-promedio"></p>
-            <div class="contador">Próxima venta automática en <span id="contador">10</span> segundos</div>
+            <div class="contador">La página se reiniciará en <span id="contador">10</span> segundos</div>
         </div>
 
-        <div class="tarjeta">
+        <div class="tarjeta comprar-panel">
             <h2>Comprar boleto</h2>
             <form id="form-compra">
                 <label>Nombre
-                    <input type="text" id="nombre" placeholder="Tu nombre" required>
+                    <input type="text" id="nombre" required>
                 </label>
                 <label>Destino
                     <select id="destino"></select>
@@ -122,23 +204,32 @@
             <p class="mensaje" id="mensaje"></p>
         </div>
 
-        <div class="tarjeta">
+        <div class="tarjeta panel-boletos">
             <h2>Mis boletos</h2>
-            <div id="lista-boletos"></div>
-            <h3 style="margin-top:16px; color:#1e3a8a;">Resumen de compra</h3>
-            <table style="width:100%; font-size:14px; border-collapse:collapse; margin-top:8px;">
-                <tr><td>Subtotal</td><td style="text-align:right;" id="subtotal"></td></tr>
-                <tr><td>Descuento 20%</td><td style="text-align:right;" id="descuento"></td></tr>
-                <tr><td>Base (sin IVA)</td><td style="text-align:right;" id="base"></td></tr>
-                <tr><td>IVA 16%</td><td style="text-align:right;" id="iva"></td></tr>
-                <tr style="font-weight:bold; border-top:1px solid #ccc;"><td>TOTAL</td><td style="text-align:right;" id="total"></td></tr>
-                <tr><td>Mitad del total</td><td style="text-align:right;" id="mitad"></td></tr>
-            </table>
+            <div class="lista-area" id="lista-boletos"></div>
+            <div class="resumen">
+                <h3>Resumen de compra</h3>
+                <table>
+                    <tr><td>Subtotal</td><td class="der" id="subtotal"></td></tr>
+                    <tr><td>Descuento 20%</td><td class="der" id="descuento"></td></tr>
+                    <tr><td>Base (sin IVA)</td><td class="der" id="base"></td></tr>
+                    <tr><td>IVA 16%</td><td class="der" id="iva"></td></tr>
+                    <tr class="fila-total"><td>TOTAL</td><td class="der" id="total"></td></tr>
+                    <tr><td class="cant">Mitad del total</td><td class="der cant" id="mitad"></td></tr>
+                </table>
+                <button type="button" class="btn btn-primario" onclick="comprarResumen()">Comprar</button>
+            </div>
         </div>
 
     </div>
 
-    <script src="boletos.js"></script>
+    <div class="modal-fondo" id="modal-ticket">
+        <div class="modal-contenido">
+            <button class="btn modal-cerrar" onclick="cerrarTicket()">Cerrar</button>
+            <div id="ticket-contenido"></div>
+        </div>
+    </div>
 
+    <script src="boletos.js"></script>
 </body>
 </html>
